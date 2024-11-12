@@ -3,6 +3,7 @@ version: '3.8'
 services:
   db:
     image: postgres:latest
+    container_name: flight_booking_database_container
     environment:
       POSTGRES_USER: admin_user
       POSTGRES_PASSWORD: admin_password
@@ -10,7 +11,9 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
+      - pgdata:/var/lib/postgresql/data
 
 volumes:
-  db_data:
+  pgdata:
+      
