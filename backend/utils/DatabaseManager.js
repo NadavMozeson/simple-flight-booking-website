@@ -66,9 +66,22 @@ ORDER BY
       return { status: 'successful', data: dbResult }
     } catch (err) {
       console.error(err);
-      throw err;
+      return { status: 'failed' }
+    }
+  }
+
+  async addBooking(flightId, name, personalId) {
+    try {
+      const sqlString = `INSERT INTO public.bookings (flight_id, full_name, personal_id, status) VALUES(${flightId}, '${name}', '${personalId}', 'Confirmed');`
+      await this.#execute(sqlString)
+      return { status: 'successful' }
+    } catch (err) {
+      console.error(err);
+      return { status: 'failed' }
     }
   }
 }
 
-module.exports = new DatabaseManager();
+const DBManager = new DatabaseManager();
+
+module.exports = DBManager;
