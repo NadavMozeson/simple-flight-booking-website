@@ -172,7 +172,7 @@ COPY public.airports (airport_id, code, name, city, country) FROM stdin;
 6	DXB	Dubai International Airport	Dubai	UAE
 7	SYD	Sydney Kingsford Smith Airport	Sydney	Australia
 8	PEK	Beijing Capital International Airport	Beijing	China
-9	GRU	S├úo PauloΓÇôGuarulhos International Airport	S├úo Paulo	Brazil
+9	GRU	Sao Paulo/Guarulhos International Airport	Sao Paulo	Brazil
 10	FRA	Frankfurt Airport	Frankfurt	Germany
 \.
 

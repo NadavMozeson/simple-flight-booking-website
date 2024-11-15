@@ -19,7 +19,7 @@ class DatabaseManager {
     });
   }
 
-  async execute(sql, params = []) {
+  async #execute(sql, params = []) {
     try {
       const result = await this.pool.query(sql, params);
       return result.rows;
@@ -29,9 +29,45 @@ class DatabaseManager {
     }
   }
 
-  async close() {
-    await this.pool.end();
-    console.log('PostgreSQL connection closed');
+  async getAllFlights() {
+    try {
+      const sqlString = `SELECT 
+    f.flight_id,
+    f.flight_number,
+    f.origin_airport_id,
+    oa.name AS origin_airport_name,
+    oa.city AS origin_city,
+    oa.country AS origin_country,
+    f.destination_airport_id,
+    da.name AS destination_airport_name,
+    da.city AS destination_city,
+    da.country AS destination_country,
+    f.departure_time,
+    f.arrival_time,
+    f.duration,
+    f.price,
+    f.available_seats,
+    COALESCE(COUNT(b.booking_id), 0) AS reserved_seats,
+    f.available_seats - COALESCE(COUNT(b.booking_id), 0) AS remaining_seats
+FROM 
+    public.flights f
+JOIN 
+    public.airports oa ON f.origin_airport_id = oa.airport_id
+JOIN 
+    public.airports da ON f.destination_airport_id = da.airport_id
+LEFT JOIN 
+    public.bookings b ON f.flight_id = b.flight_id
+GROUP BY 
+    f.flight_id, oa.name, oa.city, oa.country, da.name, da.city, da.country
+ORDER BY 
+    f.departure_time ASC;
+`
+      const dbResult = await this.#execute(sqlString)
+      return { status: 'successful', data: dbResult }
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
   }
 }
 
