@@ -7,3 +7,17 @@ export async function getAllFlights() {
     })
     return await response.json()
 }
+
+export async function bookFlight(flight, name, id) {
+    const url = `${API_BASE_URL}/flights/book`
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          flight: flight,
+          fullName: name,
+          tz: id,
+        }),
+    });
+    return await response.json()
+}

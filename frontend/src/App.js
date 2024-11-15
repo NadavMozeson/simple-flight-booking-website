@@ -1,29 +1,53 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { getAllFlights } from "./apiRequests";
+import { getAllFlights, bookFlight } from "./apiRequests";
 
 function App() {
-  const [flights, setFlights] = useState([]); // State to hold flight data
-  const [loading, setLoading] = useState(true); // State for loading indicator
+  const [flights, setFlights] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+  const [formData, setFormData] = useState({ name: "", id: "" });
+
+  const fetchData = async () => {
+    try {
+      const data = await getAllFlights();
+      if (data.status === "successful") {
+        setFlights(data.data);
+      } else {
+        console.error("Error fetching flights");
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getAllFlights();
-        if (data.status === "successful") {
-          setFlights(data.data);
-        } else {
-          console.error("Error fetching flights");
-        }
-      } catch (error) {
-        console.error("Error during API call:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleBookFlight = async () => {
+    if (selectedFlight && formData.name && formData.id) {
+      const bookResult = await bookFlight(selectedFlight.flight_id, formData.name, formData.id);
+      if (bookResult.status === "successful") {
+        alert("Flight booked successfully!");
+        fetchData()
+      } else {
+        alert("Error booking flight.");
+      }
+      setModalVisible(false);
+      setFormData({ name: "", id: "" });
+    } else {
+      alert("Please fill in all fields.");
+    }
+  };
 
   return (
     <div className="App">
@@ -37,8 +61,8 @@ function App() {
               <div className="flight-box" key={flight.flight_id}>
                 <h2>{flight.flight_number}</h2>
                 <p>
-                  <strong>Origin:</strong> {flight.origin_airport_name} (
-                  {flight.origin_city}, {flight.origin_country})
+                  <strong>Origin:</strong> {flight.origin_airport_name} ({flight.origin_city},{" "}
+                  {flight.origin_country})
                 </p>
                 <p>
                   <strong>Destination:</strong> {flight.destination_airport_name} (
@@ -51,16 +75,70 @@ function App() {
                   <strong>Arrival:</strong> {new Date(flight.arrival_time).toLocaleString()}
                 </p>
                 <p>
+                  <strong>Remaining Seats:</strong> {flight.remaining_seats}
+                </p>
+                <p className="price">
                   <strong>Price:</strong> ${flight.price}
                 </p>
-                <p>
-                  <strong>Seats Remaining:</strong> {flight.remaining_seats}
-                </p>
+                <button
+                  className="btn-book"
+                  onClick={() => {
+                    setSelectedFlight(flight);
+                    setModalVisible(true);
+                  }}
+                >
+                  Book Now
+                </button>
               </div>
             ))}
           </div>
         )}
       </header>
+
+      {modalVisible && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Book Flight</h2>
+            <p>
+              Booking flight: <strong>{selectedFlight.flight_number}</strong>
+            </p>
+            <form>
+              <div className="form-group">
+                <label htmlFor="name">Full Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter your full name"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="id">ID</label>
+                <input
+                  type="text"
+                  id="id"
+                  name="id"
+                  value={formData.id}
+                  onChange={handleInputChange}
+                  placeholder="Enter your ID"
+                />
+              </div>
+              <button type="button" className="btn-submit" onClick={handleBookFlight}>
+                Confirm Booking
+              </button>
+              <button
+                type="button"
+                className="btn-cancel"
+                onClick={() => setModalVisible(false)}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
