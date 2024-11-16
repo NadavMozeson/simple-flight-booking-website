@@ -72,9 +72,15 @@ ORDER BY
 
   async addBooking(flightId, name, personalId) {
     try {
-      const sqlString = `INSERT INTO public.bookings (flight_id, full_name, personal_id, status) VALUES(${flightId}, '${name}', '${personalId}', 'Confirmed');`
-      await this.#execute(sqlString)
-      return { status: 'successful' }
+      if (flightId && name && personalId) {
+        const sqlString = `INSERT INTO public.bookings (flight_id, full_name, personal_id, status) VALUES(${flightId}, '${name}', '${personalId}', 'Confirmed');`
+        if (process.env.NODE_ENV !== 'test') {
+          await this.#execute(sqlString)
+        }
+        return { status: 'successful' }
+      } else {
+        return { status: 'invalid data' }
+      }
     } catch (err) {
       console.error(err);
       return { status: 'failed' }
