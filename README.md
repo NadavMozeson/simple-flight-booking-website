@@ -56,7 +56,7 @@ A lightweight and user-friendly flight booking application designed to streamlin
 4. **Run the Application:**
    - Backend: Navigate to the `backend` folder and start the server:
      ```bash
-     npm run dev
+     npm start
      ```
    - Frontend: Navigate to the `frontend` folder and start the client:
      ```bash
