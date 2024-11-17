@@ -49,7 +49,8 @@ A lightweight and user-friendly flight booking application designed to streamlin
 
 3. **Start the Docker Environment:**
    ```bash
-   docker-compose up
+   cd database
+   docker-compose up -d
    ```
 
 4. **Run the Application:**
