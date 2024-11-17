@@ -34,4 +34,22 @@ describe('API Functionality Tests', () => {
     expect(response.statusCode).toBe(200); 
     expect((response.body.status === 'invalid data')).toBe(true); 
   });
+
+  test('POST /flights/search should return filtered flights', async () => {
+    const searchCriteria = {
+      origin: 'New York',
+      destination: 'Los Angeles',
+      date: '2024-12-01',
+    };
+  
+    const response = await request(app).post('/flights/search').send(searchCriteria);
+    expect(response.statusCode).toBe(200);
+    expect(response.body.status).toBe('successful');
+    expect(Array.isArray(response.body.data)).toBe(true);
+    if (response.body.data.length > 0) {
+      expect(response.body.data[0].origin_city).toMatch(/New York/i);
+      expect(response.body.data[0].destination_city).toMatch(/Los Angeles/i);
+    }
+  });
+  
 });

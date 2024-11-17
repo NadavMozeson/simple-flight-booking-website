@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { getAllFlights, bookFlight } from "./apiRequests";
+import { getAllFlights, bookFlight, searchFlight } from "./apiRequests";
 
 function App() {
   const [flights, setFlights] = useState([]);
@@ -8,6 +8,7 @@ function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
   const [formData, setFormData] = useState({ name: "", id: "" });
+  const [searchCriteria, setSearchCriteria] = useState({ origin: "", destination: "" });
 
   const fetchData = async () => {
     try {
@@ -33,12 +34,33 @@ function App() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchCriteria({ ...searchCriteria, [name]: value });
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const data = await searchFlight(searchCriteria.origin, searchCriteria.destination);
+      if (data.status === "successful") {
+        setFlights(data.data);
+      } else {
+        console.error("Error fetching search results");
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleBookFlight = async () => {
     if (selectedFlight && formData.name && formData.id) {
       const bookResult = await bookFlight(selectedFlight.flight_id, formData.name, formData.id);
       if (bookResult.status === "successful") {
         alert("Flight booked successfully!");
-        fetchData()
+        fetchData();
       } else {
         alert("Error booking flight.");
       }
@@ -53,6 +75,23 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Flight List</h1>
+        <div className="search-container">
+          <input
+            type="text"
+            name="origin"
+            value={searchCriteria.origin}
+            onChange={handleSearchChange}
+            placeholder="Origin"
+          />
+          <input
+            type="text"
+            name="destination"
+            value={searchCriteria.destination}
+            onChange={handleSearchChange}
+            placeholder="Destination"
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
         {loading ? (
           <p>Loading flights...</p>
         ) : (

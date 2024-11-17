@@ -5,6 +5,7 @@ import * as apiRequests from "./apiRequests";
 jest.mock("./apiRequests", () => ({
   getAllFlights: jest.fn(),
   bookFlight: jest.fn(),
+  searchFlight: jest.fn(),
 }));
 
 beforeAll(() => {
@@ -103,5 +104,76 @@ describe("Flight Booking App", () => {
 
     expect(screen.queryByText(/FL001/i)).not.toBeInTheDocument();
     expect(console.error).toHaveBeenCalledWith("Error fetching flights");
+  });
+
+  test("search filters flights", async () => {
+    apiRequests.getAllFlights.mockResolvedValue({
+      status: "successful",
+      data: [
+        {
+          flight_id: 1,
+          flight_number: "FL001",
+          origin_airport_name: "John F. Kennedy International Airport",
+          origin_city: "New York",
+          origin_country: "USA",
+          destination_airport_name: "Los Angeles International Airport",
+          destination_city: "Los Angeles",
+          destination_country: "USA",
+          departure_time: "2024-12-01T10:00:00Z",
+          arrival_time: "2024-12-01T13:00:00Z",
+          remaining_seats: 50,
+          price: 300,
+        },
+        {
+          flight_id: 2,
+          flight_number: "FL002",
+          origin_airport_name: "San Francisco International Airport",
+          origin_city: "San Francisco",
+          origin_country: "USA",
+          destination_airport_name: "Chicago O'Hare International Airport",
+          destination_city: "Chicago",
+          destination_country: "USA",
+          departure_time: "2024-12-02T14:00:00Z",
+          arrival_time: "2024-12-02T18:00:00Z",
+          remaining_seats: 40,
+          price: 250,
+        },
+      ],
+    });
+
+    // Mock API for search results
+    apiRequests.searchFlight.mockResolvedValue({
+      status: "successful",
+      data: [
+        {
+          flight_id: 1,
+          flight_number: "FL001",
+          origin_airport_name: "John F. Kennedy International Airport",
+          origin_city: "New York",
+          origin_country: "USA",
+          destination_airport_name: "Los Angeles International Airport",
+          destination_city: "Los Angeles",
+          destination_country: "USA",
+          departure_time: "2024-12-01T10:00:00Z",
+          arrival_time: "2024-12-01T13:00:00Z",
+          remaining_seats: 50,
+          price: 300,
+        },
+      ],
+    });
+
+    render(<App />);
+
+    await waitFor(() => screen.getByText(/FL001/i));
+
+    fireEvent.change(screen.getByPlaceholderText(/origin/i), { target: { value: "New York" } });
+    fireEvent.change(screen.getByPlaceholderText(/destination/i), { target: { value: "Los Angeles" } });
+
+    fireEvent.click(screen.getByText(/search/i));
+
+    await waitFor(() => screen.getByText(/FL001/i));
+
+    expect(screen.getByText(/FL001/i)).toBeInTheDocument();
+    expect(screen.queryByText(/FL002/i)).not.toBeInTheDocument();
   });
 });
