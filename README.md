@@ -48,7 +48,7 @@ The system is built using a **three-layered architecture**:
    - PostgreSQL database for reliable storage of flight, airport, and booking data.
    - Optimized with indexes and relationships for efficient querying.
 
-For more details, visit the [Architecture Overview](./Architecture-Overview) page.
+For more details, visit the [Architecture Overview](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Architecture-Overview) page.
 
 ---
 
@@ -60,7 +60,7 @@ The database is designed to efficiently manage flight-related operations. It inc
 2. **Flights**: Contains flight schedules, pricing, and availability.
 3. **Bookings**: Tracks passenger bookings and their statuses.
 
-View the full schema on the [Database Schema](./Database-Schema-Architecture) page.
+View the full schema on the [Database Schema](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Database-Schema-Architecture) page.
 
 ---
 
@@ -72,7 +72,7 @@ The system exposes several API endpoints for interacting with flights and bookin
 - **POST `/flights/search`**: Search for flights by origin and destination.
 - **POST `/flights/book`**: Book a flight by providing flight ID and passenger details.
 
-Visit the [API Endpoints](./API-Endpoints) page for detailed documentation.
+Visit the [API Endpoints](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/API-Endpoints) page for detailed documentation.
 
 ---
 
@@ -111,4 +111,4 @@ To set up the project locally, follow these steps:
    npm start
    ```
 
-For a detailed guide, visit the [Setup Guide](./Setup-Guide) page.
+For a detailed guide, visit the [Setup Guide](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Setup-Guide) page.
