@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { getAllFlights, bookFlight } from "./apiRequests";
+import { getAllFlights, bookFlight, searchFlight } from "./apiRequests";
 
 function App() {
   const [flights, setFlights] = useState([]);
@@ -8,7 +8,12 @@ function App() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
   const [formData, setFormData] = useState({ name: "", id: "" });
+  const [searchCriteria, setSearchCriteria] = useState({ origin: "", destination: "" });
 
+  /**
+   * Fetches all flights and updates the flight list.
+   * Called on initial load or after booking a flight.
+   */
   const fetchData = async () => {
     try {
       const data = await getAllFlights();
@@ -24,21 +29,59 @@ function App() {
     }
   };
 
+  // Runs fetchData on initial component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  /**
+   * Handles input changes for the booking form.
+   * @param {Object} e - Event object from input change.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  /**
+   * Handles input changes for the search form.
+   * @param {Object} e - Event object from input change.
+   */
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchCriteria({ ...searchCriteria, [name]: value });
+  };
+
+  /**
+   * Searches for flights based on origin and destination criteria.
+   * Updates the flight list with the search results.
+   */
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const data = await searchFlight(searchCriteria.origin, searchCriteria.destination);
+      if (data.status === "successful") {
+        setFlights(data.data);
+      } else {
+        console.error("Error fetching search results");
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /**
+   * Books the selected flight with the provided form data.
+   * Updates the flight list after a successful booking.
+   */
   const handleBookFlight = async () => {
     if (selectedFlight && formData.name && formData.id) {
       const bookResult = await bookFlight(selectedFlight.flight_id, formData.name, formData.id);
       if (bookResult.status === "successful") {
         alert("Flight booked successfully!");
-        fetchData()
+        fetchData();
       } else {
         alert("Error booking flight.");
       }
@@ -53,6 +96,23 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Flight List</h1>
+        <div className="search-container">
+          <input
+            type="text"
+            name="origin"
+            value={searchCriteria.origin}
+            onChange={handleSearchChange}
+            placeholder="Origin"
+          />
+          <input
+            type="text"
+            name="destination"
+            value={searchCriteria.destination}
+            onChange={handleSearchChange}
+            placeholder="Destination"
+          />
+          <button onClick={handleSearch}>Search</button>
+        </div>
         {loading ? (
           <p>Loading flights...</p>
         ) : (
