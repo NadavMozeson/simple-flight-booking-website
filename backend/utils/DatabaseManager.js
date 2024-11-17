@@ -19,6 +19,14 @@ class DatabaseManager {
     });
   }
 
+  /**
+   * Executes a SQL query.
+   * @private
+   * @param {string} sql - SQL query string.
+   * @param {Array} params - Array of query parameters.
+   * @returns {Array} Resulting rows from the query.
+   * @throws {Error} If the query fails.
+   */
   async #execute(sql, params = []) {
     try {
       const result = await this.pool.query(sql, params);
@@ -29,6 +37,10 @@ class DatabaseManager {
     }
   }
 
+  /**
+   * Fetches all flights from the database.
+   * @returns {Object} Status and flight data (or a placeholder in test environment).
+   */
   async getAllFlights() {
     try {
       const sqlString = `SELECT 
@@ -83,6 +95,13 @@ ORDER BY
     }
   }
 
+  /**
+   * Adds a new booking to the database.
+   * @param {number} flightId - ID of the flight to book.
+   * @param {string} name - Full name of the passenger.
+   * @param {string} personalId - Personal ID of the passenger.
+   * @returns {Object} Status of the booking operation.
+   */
   async addBooking(flightId, name, personalId) {
     try {
       if (flightId && name && personalId) {
@@ -100,6 +119,11 @@ ORDER BY
     }
   }
 
+  /**
+   * Searches for flights based on criteria.
+   * @param {Object} criteria - Search criteria (e.g., origin, destination).
+   * @returns {Object} Status and matching flight data.
+   */
   async searchFlights(criteria) {
     try {
       const filters = [];
