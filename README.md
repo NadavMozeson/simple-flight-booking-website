@@ -1,85 +1,114 @@
-# Simple Flight Booking Website
+# Flight Booking System
 
-A lightweight and user-friendly flight booking application designed to streamline the process of searching, selecting, and reserving flight seats. This project implements a robust backend, an interactive frontend, and a database for efficient data management.
+## Table of Contents
 
----
-
-## Features
-
-- **Search Flights:** View all available flights with detailed information.
-- **Book Flights:** Reserve a seat with just a full name and personal ID.
-- **Robust Backend:** Powered by Express.js and PostgreSQL for seamless operations.
-- **Scalable Frontend:** Built with React for a dynamic user experience.
-- **CI/CD Automation:** Streamlined development workflow with GitHub Actions.
-- **Containerized Environment:** Dockerized setup for consistent and reliable deployments.
+1. [Introduction](#introduction)
+2. [Key Features](#key-features)
+3. [Architecture Overview](#architecture-overview)
+4. [Database Schema](#database-schema)
+5. [API Endpoints](#api-endpoints)
+6. [Setup Guide](#setup-guide)
 
 ---
 
-## Project Structure
+## Introduction
 
-- **Frontend:** React application for user interactions.
-- **Backend:** Express.js server managing API endpoints and business logic.
-- **Database:** PostgreSQL for efficient data storage and retrieval.
-- **CI/CD Pipeline:** Automated testing and deployment using GitHub Actions.
+The **Flight Booking System** is a web-based platform built to simplify the flight booking process. Users can:
+- Search for flights by origin and destination.
+- View available seats, flight details, and pricing.
+- Book flights by providing their name and ID.
+
+This system ensures efficient booking management and seamless user experience.
 
 ---
 
-## Setup Instructions
+## Key Features
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v14 or later)
-- [Docker](https://www.docker.com/)
-- [Git](https://git-scm.com/)
+- **Flight Search**: Filter flights based on origin, destination, and date.
+- **Real-Time Availability**: View available seats for each flight.
+- **Booking System**: Securely book flights with minimal user input.
+- **Modern UI**: An intuitive and user-friendly frontend built with React.
+- **API-Driven**: Robust RESTful API built with Express.js for scalability.
 
-### Local Development
+---
 
-1. **Clone the Repository:**
+## Architecture Overview
+
+The system is built using a **three-layered architecture**:
+
+1. **Frontend**: 
+   - Built with React for a modern and interactive user experience.
+   - Communicates with the backend via API requests.
+
+2. **Backend**:
+   - Built with Express.js, handling all API logic and business processes.
+   - Validates user input, processes flight searches, and manages bookings.
+
+3. **Database**:
+   - PostgreSQL database for reliable storage of flight, airport, and booking data.
+   - Optimized with indexes and relationships for efficient querying.
+
+For more details, visit the [Architecture Overview](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Architecture-Overview) page.
+
+---
+
+## Database Schema
+
+The database is designed to efficiently manage flight-related operations. It includes the following primary tables:
+
+1. **Airports**: Stores airport details such as name, city, and country.
+2. **Flights**: Contains flight schedules, pricing, and availability.
+3. **Bookings**: Tracks passenger bookings and their statuses.
+
+View the full schema on the [Database Schema](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Database-Schema-Architecture) page.
+
+---
+
+## API Endpoints
+
+The system exposes several API endpoints for interacting with flights and bookings. Key endpoints include:
+
+- **GET `/flights/get/all`**: Retrieve all flights.
+- **POST `/flights/search`**: Search for flights by origin and destination.
+- **POST `/flights/book`**: Book a flight by providing flight ID and passenger details.
+
+Visit the [API Endpoints](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/API-Endpoints) page for detailed documentation.
+
+---
+
+## Setup Guide
+
+To set up the project locally, follow these steps:
+
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/NadavMozeson/simple-flight-booking-website.git
-   cd simple-flight-booking-website
+   git clone https://github.com/NadavMozeson/simple-flight-booking-website
    ```
 
-2. **Install Dependencies:**
+2. **Install dependencies**:
    ```bash
-   cd backend
+   cd frontend
    npm install
-   cd ../frontend
+   cd ../backend
    npm install
    ```
 
-3. **Start the Docker Environment:**
+3. **Start the database**:
    ```bash
    cd database
    docker-compose up -d
    ```
 
-4. **Run the Application:**
-   - Backend: Navigate to the `backend` folder and start the server:
-     ```bash
-     npm start
-     ```
-   - Frontend: Navigate to the `frontend` folder and start the client:
-     ```bash
-     npm start
-     ```
+4. **Run the backend**:
+   ```bash
+   cd backend
+   npm start
+   ```
 
-5. **Access the Application:**
-   Open your browser and navigate to [http://localhost:3000](http://localhost:3000) for the frontend.
+5. **Run the frontend**:
+   ```bash
+   cd frontend
+   npm start
+   ```
 
----
-
-## Running Tests
-
-### Backend Tests
-Run the backend tests using:
-```bash
-cd backend
-npm test
-```
-
-### Frontend Tests
-Run the frontend tests using:
-```bash
-cd frontend
-npm test
-```
+For a detailed guide, visit the [Setup Guide](https://github.com/NadavMozeson/simple-flight-booking-website/wiki/Setup-Guide) page.
