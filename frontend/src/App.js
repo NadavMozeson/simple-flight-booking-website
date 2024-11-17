@@ -10,6 +10,10 @@ function App() {
   const [formData, setFormData] = useState({ name: "", id: "" });
   const [searchCriteria, setSearchCriteria] = useState({ origin: "", destination: "" });
 
+  /**
+   * Fetches all flights and updates the flight list.
+   * Called on initial load or after booking a flight.
+   */
   const fetchData = async () => {
     try {
       const data = await getAllFlights();
@@ -25,20 +29,33 @@ function App() {
     }
   };
 
+  // Runs fetchData on initial component mount
   useEffect(() => {
     fetchData();
   }, []);
 
+  /**
+   * Handles input changes for the booking form.
+   * @param {Object} e - Event object from input change.
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  /**
+   * Handles input changes for the search form.
+   * @param {Object} e - Event object from input change.
+   */
   const handleSearchChange = (e) => {
     const { name, value } = e.target;
     setSearchCriteria({ ...searchCriteria, [name]: value });
   };
 
+  /**
+   * Searches for flights based on origin and destination criteria.
+   * Updates the flight list with the search results.
+   */
   const handleSearch = async () => {
     setLoading(true);
     try {
@@ -55,6 +72,10 @@ function App() {
     }
   };
 
+  /**
+   * Books the selected flight with the provided form data.
+   * Updates the flight list after a successful booking.
+   */
   const handleBookFlight = async () => {
     if (selectedFlight && formData.name && formData.id) {
       const bookResult = await bookFlight(selectedFlight.flight_id, formData.name, formData.id);
